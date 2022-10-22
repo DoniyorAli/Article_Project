@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-var InMemoryArticleData []models.Article
 //*=========================================================================
 func (inM InMemory) AddNewArticle(id string, box models.CreateModelArticle) error {
 	var article models.Article
@@ -15,13 +14,13 @@ func (inM InMemory) AddNewArticle(id string, box models.CreateModelArticle) erro
 	article.Content = box.Content
 	article.AuthorID = box.AuthorID
 	article.CreateAt = time.Now()
-	InMemoryArticleData = append(InMemoryArticleData, article)
+	inM.DB.InMemoryArticleData = append(inM.DB.InMemoryArticleData, article)
 	return nil
 }
 //*=========================================================================
 func (inM InMemory) GetArticleById(id string) (models.GetByIDArticleModel, error) {
 	var result models.GetByIDArticleModel
-	for _, v := range InMemoryArticleData {
+	for _, v := range inM.DB.InMemoryArticleData {
 		if v.ID == id && v.DeletedAt == nil {
 			author, err := inM.GetAuthorById(v.AuthorID)
 			if err != nil {
@@ -43,7 +42,7 @@ func (inM InMemory) GetArticleList(offset, limit int, search string) (dataset []
 	throw := 0
 	count := 0
 
-	for _, v := range InMemoryArticleData {
+	for _, v := range inM.DB.InMemoryArticleData {
 		if v.DeletedAt == nil && (strings.Contains(v.Title, search) || strings.Contains(v.Body, search)) {
 			if offset <= throw {
 				count++
@@ -61,13 +60,13 @@ func (inM InMemory) GetArticleList(offset, limit int, search string) (dataset []
 //*=========================================================================
 func (inM InMemory) UpdateArticle(box models.UpdateArticleResponse) error {
 	var temp models.Article
-	for i, v := range InMemoryArticleData {
+	for i, v := range inM.DB.InMemoryArticleData {
 		if v.ID == box.ID && v.DeletedAt == nil {
 			temp = v
 			temp.Content = box.Content
 			t := time.Now()
 			temp.UpdateAt = &t
-			InMemoryArticleData[i] = temp
+			inM.DB.InMemoryArticleData[i] = temp
 		
 			return nil
 		}
@@ -76,14 +75,14 @@ func (inM InMemory) UpdateArticle(box models.UpdateArticleResponse) error {
 }
 //*=========================================================================
 func (inM InMemory) DeleteArticle(id string) error {
-	for i, v := range InMemoryArticleData {
+	for i, v := range inM.DB.InMemoryArticleData {
 		if v.ID == id {
 			if v.DeletedAt != nil {
 				return errors.New("article already deleted")
 			}
 			t := time.Now()
 			v.DeletedAt = &t
-			InMemoryArticleData[i] = v
+			inM.DB.InMemoryArticleData[i] = v
 			return nil
 		}
 	}

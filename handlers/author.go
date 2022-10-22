@@ -21,7 +21,7 @@ import (
 // @Success     201 {object} models.JSONRespons{data=models.Author} //? interfeysni overright qivoradi
 // @Failure     400 {object} models.JSONErrorRespons                //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/author [post]
-func (h Handler) CreateAuthor(ctx *gin.Context){
+func (h *Handler) CreateAuthor(ctx *gin.Context){
 	inM := inmemory.InMemory{}
 	var body models.CreateModelAuthor
 	if err := ctx.ShouldBindJSON(&body); err != nil {
@@ -64,7 +64,7 @@ func (h Handler) CreateAuthor(ctx *gin.Context){
 // @Success     200 {object} models.JSONRespons{data=models.Author}
 // @Failure     404 {object} models.JSONErrorRespons
 // @Router      /v2/author/{id} [get]
-func (h Handler) GetAuthorById(ctx *gin.Context) {
+func (h *Handler) GetAuthorById(ctx *gin.Context) {
 	inM := inmemory.InMemory{}
 	idStr := ctx.Param("id")
 
@@ -100,7 +100,7 @@ func (h Handler) GetAuthorById(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=[]models.Author}
 // @Router      /v2/author [get]
-func (h Handler) GetAuthorList(ctx *gin.Context) {
+func (h *Handler) GetAuthorList(ctx *gin.Context) {
 	inM := inmemory.InMemory{}
 	authorList, err := inM.GetAuthorList()
 	if err != nil {
@@ -126,7 +126,7 @@ func (h Handler) GetAuthorList(ctx *gin.Context) {
 // @Success     200 {object} models.JSONRespons{data=models.Author}
 // @Failure     400 {object} models.JSONErrorRespons
 // @Router      /v2/author [put]
-func (h Handler) UpdateAuthor(ctx *gin.Context) {
+func (h *Handler) UpdateAuthor(ctx *gin.Context) {
 	inM := inmemory.InMemory{}
 	var body models.UpdateAuthorResponse
 	if err := ctx.ShouldBindJSON(&body); err != nil {
@@ -170,7 +170,7 @@ func (h Handler) UpdateAuthor(ctx *gin.Context) {
 // @Success     200 {object} models.JSONRespons{data=models.Author}
 // @Failure     400 {object} models.JSONErrorRespons
 // @Router      /v2/author/{id} [delete]
-func (h Handler) DeleteAuthor(ctx *gin.Context) {
+func (h *Handler) DeleteAuthor(ctx *gin.Context) {
 	inM := inmemory.InMemory{}
 	idStr := ctx.Param("id")
 

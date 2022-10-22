@@ -23,7 +23,9 @@ func main() {
 	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
 	docs.SwaggerInfo.Version = "2.0"
 
-	inM := inmemory.InMemory{}
+	inM := inmemory.InMemory{
+		DB: &inmemory.DataB{},
+	}
 
 	err := inM.AddAuthor("52c9c9bd-2e68-401f-8ade-31dc7e7d6eea", models.CreateModelAuthor{
 		Firstname: "John",
@@ -168,7 +170,9 @@ func main() {
 
 	r := gin.Default()
 
-	h := handlers.Handler{}
+	h := handlers.Handler{
+		IM: inM,
+	}
 
 	v1 := r.Group("/v2")
 	{
