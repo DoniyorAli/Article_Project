@@ -1,4 +1,4 @@
-package storage
+package inmemory
 
 import (
 	"UacademyGo/Article/models"
@@ -8,7 +8,7 @@ import (
 
 var InMemoryAuthorData []models.Author
 
-func AddAuthor(id string, box models.CreateModelAuthor) error {
+func (inM InMemory) AddAuthor(id string, box models.CreateModelAuthor) error {
 	var author models.Author
 	author.ID = id
 	author.Firstname = box.Firstname
@@ -19,7 +19,7 @@ func AddAuthor(id string, box models.CreateModelAuthor) error {
 }
 
 //*=========================================================================
-func GetAuthorById(id string) (models.Author, error) {
+func (inM InMemory) GetAuthorById(id string) (models.Author, error) {
 	var result models.Author
 	for _, v := range InMemoryAuthorData {
 		if v.ID == id {
@@ -31,13 +31,13 @@ func GetAuthorById(id string) (models.Author, error) {
 }
 
 //*=========================================================================
-func GetAuthorList() (dataset []models.Author, err error) {
+func (inM InMemory) GetAuthorList() (dataset []models.Author, err error) {
 	dataset = InMemoryAuthorData
 	return dataset, err
 }
 
 //*=========================================================================
-func UpdateAuthor(box models.UpdateAuthorResponse) error {
+func (inM InMemory) UpdateAuthor(box models.UpdateAuthorResponse) error {
 	var temp models.Author
 	for i, v := range InMemoryAuthorData {
 		if v.ID == box.ID {
@@ -55,7 +55,7 @@ func UpdateAuthor(box models.UpdateAuthorResponse) error {
 }
 
 //*=========================================================================
-func DeleteAuthor(id string) error {
+func (inM InMemory) DeleteAuthor(id string) error {
 	for i, v := range InMemoryAuthorData {
 		if v.ID == id {
 			// InMemoryArticleData = remove(InMemoryArticleData, i)

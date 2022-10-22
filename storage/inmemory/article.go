@@ -1,4 +1,4 @@
-package storage
+package inmemory
 
 import (
 	"UacademyGo/Article/models"
@@ -9,7 +9,7 @@ import (
 
 var InMemoryArticleData []models.Article
 //*=========================================================================
-func AddNewArticle(id string, box models.CreateModelArticle) error {
+func (inM InMemory) AddNewArticle(id string, box models.CreateModelArticle) error {
 	var article models.Article
 	article.ID = id
 	article.Content = box.Content
@@ -19,15 +19,14 @@ func AddNewArticle(id string, box models.CreateModelArticle) error {
 	return nil
 }
 //*=========================================================================
-func GetArticleById(id string) (models.GetByIDArticleModel, error) {
+func (inM InMemory) GetArticleById(id string) (models.GetByIDArticleModel, error) {
 	var result models.GetByIDArticleModel
 	for _, v := range InMemoryArticleData {
 		if v.ID == id && v.DeletedAt == nil {
-			author, err := GetAuthorById(v.AuthorID)
+			author, err := inM.GetAuthorById(v.AuthorID)
 			if err != nil {
 				return result, err
 			}
-
 			result.ID = v.ID
 			result.Author = author
 			result.Content = v.Content
@@ -40,7 +39,7 @@ func GetArticleById(id string) (models.GetByIDArticleModel, error) {
 	return result, errors.New("article not found")
 }
 //*=========================================================================
-func GetArticleList(offset, limit int, search string) (dataset []models.Article, err error) {
+func (inM InMemory) GetArticleList(offset, limit int, search string) (dataset []models.Article, err error) {
 	throw := 0
 	count := 0
 
@@ -60,7 +59,7 @@ func GetArticleList(offset, limit int, search string) (dataset []models.Article,
 	return dataset, err
 }
 //*=========================================================================
-func UpdateArticle(box models.UpdateArticleResponse) error {
+func (inM InMemory) UpdateArticle(box models.UpdateArticleResponse) error {
 	var temp models.Article
 	for i, v := range InMemoryArticleData {
 		if v.ID == box.ID && v.DeletedAt == nil {
@@ -76,7 +75,7 @@ func UpdateArticle(box models.UpdateArticleResponse) error {
 	return errors.New("article not found")
 }
 //*=========================================================================
-func DeleteArticle(id string) error {
+func (inM InMemory) DeleteArticle(id string) error {
 	for i, v := range InMemoryArticleData {
 		if v.ID == id {
 			if v.DeletedAt != nil {

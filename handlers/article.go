@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"UacademyGo/Article/models"
-	"UacademyGo/Article/storage"
+	"UacademyGo/Article/storage/inmemory"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -23,7 +23,7 @@ import (
 // @Success     201 {object} models.JSONRespons{data=models.Article} //? interfeysni overright qivoradi
 // @Failure     400 {object} models.JSONErrorRespons                 //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/article [post]
-func CreateArticle(ctx *gin.Context){
+func (h Handler) CreateArticle(ctx *gin.Context){
 	var body models.CreateModelArticle
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
@@ -32,7 +32,9 @@ func CreateArticle(ctx *gin.Context){
 
 	id := uuid.New()
 
-	err := storage.AddNewArticle(id.String(), body)
+	inM := inmemory.InMemory{}
+
+	err := inM.AddNewArticle(id.String(), body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -40,7 +42,7 @@ func CreateArticle(ctx *gin.Context){
 		return
 	}
 
-	article, err := storage.GetArticleById(id.String())
+	article, err := inM.GetArticleById(id.String())
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -65,7 +67,7 @@ func CreateArticle(ctx *gin.Context){
 // @Success     200 {object} models.JSONRespons{data=models.GetByIDArticleModel}
 // @Failure     404 {object} models.JSONErrorRespons
 // @Router      /v2/article/{id} [get]
-func GetArticleById(ctx *gin.Context) {
+func (h Handler) GetArticleById(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
 //TODO UUID validation
@@ -74,8 +76,8 @@ func GetArticleById(ctx *gin.Context) {
 	// if isTrue == true{
 		 
 	// }
-
-	article, err := storage.GetArticleById(idStr) //? qanaqa qilip storagega bervorvotti
+	inM := inmemory.InMemory{}
+	article, err := inM.GetArticleById(idStr) //? qanaqa qilip inMga bervorvotti
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -103,7 +105,7 @@ func GetArticleById(ctx *gin.Context) {
 // @Param       search query    string false "smth"
 // @Success     200    {object} models.JSONRespons{data=[]models.Article}
 // @Router      /v2/article [get]
-func GetArticleList(ctx *gin.Context) {
+func (h Handler) GetArticleList(ctx *gin.Context) {
 	offsetStr := ctx.DefaultQuery("offset", "0")
 	limitStr := ctx.DefaultQuery("limit", "10")
 	searchStr := ctx.DefaultQuery("search", "")
@@ -124,7 +126,8 @@ func GetArticleList(ctx *gin.Context) {
 		return
 	}
 
-	articleList, err := storage.GetArticleList(offset, limit, searchStr)
+	inM := inmemory.InMemory{}
+	articleList, err := inM.GetArticleList(offset, limit, searchStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -148,24 +151,25 @@ func GetArticleList(ctx *gin.Context) {
 // @Success     200 {object} models.JSONRespons{data=models.Article}
 // @Failure     400 {object} models.JSONErrorRespons
 // @Router      /v2/article [put]
-func UpdateArticle(ctx *gin.Context) {
+func (h Handler) UpdateArticle(ctx *gin.Context) {
 	var body models.UpdateArticleResponse
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
 		return
 	}
 
-	err :=  storage.UpdateArticle(body)
+	inM := inmemory.InMemory{}
+	err :=  inM.UpdateArticle(body)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
-			Message: "Storage error",
+			Message: "inM error",
 			Error: err.Error(),
 		})
 		return
 	}
 
-	article, err := storage.GetArticleById(body.ID)
+	article, err := inM.GetArticleById(body.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
@@ -191,10 +195,11 @@ func UpdateArticle(ctx *gin.Context) {
 // @Success     200 {object} models.JSONRespons{data=models.Article}
 // @Failure     400 {object} models.JSONErrorRespons
 // @Router      /v2/article/{id} [delete]
-func DeleteArticle(ctx *gin.Context) {
+func (h Handler) DeleteArticle(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
-	article, err := storage.GetArticleById(idStr)
+	inM := inmemory.InMemory{}
+	article, err := inM.GetArticleById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Message: "article already deleted or not found or you entered wrong ID",
@@ -203,7 +208,7 @@ func DeleteArticle(ctx *gin.Context) {
 		return
 	}
 
-	err = storage.DeleteArticle(article.ID)
+	err = inM.DeleteArticle(article.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
@@ -219,7 +224,7 @@ func DeleteArticle(ctx *gin.Context) {
 }
 
 // * ==================== PingPong ====================
-func Pong(ctx *gin.Context) {
+func (h Handler) Pong(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 	})
