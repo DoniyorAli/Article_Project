@@ -48,7 +48,7 @@ func CreateArticle(ctx *gin.Context){
 	}
 
 	ctx.JSON(http.StatusCreated, models.JSONRespons{
-		Message: "Article | GetList",
+		Message: "Article successfully created",
 		Data:    article,
 	})
 }
@@ -172,7 +172,7 @@ func DeleteArticle(ctx *gin.Context) {
 
 	article, err := storage.GetArticleById(idStr)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
+		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Message: "article already deleted or not found or you entered wrong ID",
 			Error: err.Error(),
 		})

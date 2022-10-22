@@ -21,7 +21,7 @@ func AddNewArticle(id string, box models.CreateModelArticle) error {
 func GetArticleById(id string) (models.GetByIDArticleModel, error) {
 	var result models.GetByIDArticleModel
 	for _, v := range InMemoryArticleData {
-		if v.ID == id {
+		if v.ID == id && v.DeletedAt == nil {
 			author, err := GetAuthorById(v.AuthorID)
 			if err != nil {
 				return result, err
@@ -40,14 +40,18 @@ func GetArticleById(id string) (models.GetByIDArticleModel, error) {
 }
 //*=========================================================================
 func GetArticleList() (dataset []models.Article, err error) {
-	dataset = InMemoryArticleData	//! dataset ---> malumotlar to'plami
+	for _, v := range InMemoryArticleData {
+		if v.DeletedAt == nil {
+			dataset = append(dataset, v)	//! dataset ---> malumotlar to'plami
+		}
+	}
 	return dataset, err
 }
 //*=========================================================================
 func UpdateArticle(box models.UpdateArticleResponse) error {
 	var temp models.Article
 	for i, v := range InMemoryArticleData {
-		if v.ID == box.ID {
+		if v.ID == box.ID && v.DeletedAt == nil {
 			temp = v
 			temp.Content = box.Content
 			t := time.Now()
@@ -63,12 +67,16 @@ func UpdateArticle(box models.UpdateArticleResponse) error {
 func DeleteArticle(id string) error {
 	for i, v := range InMemoryArticleData {
 		if v.ID == id {
-			// InMemoryArticleData = remove(InMemoryArticleData, i)
-			InMemoryArticleData = append(InMemoryArticleData[:i], InMemoryArticleData[i+1:]...)
+			if v.DeletedAt != nil {
+				return errors.New("article already deleted")
+			}
+			t := time.Now()
+			v.DeletedAt = &t
+			InMemoryArticleData[i] = v
 			return nil
 		}
 	}
-	return errors.New("deletion failed")
+	return errors.New("article not found")
 }
 
 
