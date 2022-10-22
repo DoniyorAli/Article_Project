@@ -31,7 +31,7 @@ func main() {
 		panic(err)
 	}
 
-	err = storage.AddNewArticle("32f0ef03-3907-46be-af9f-248d4e65a2a5", models.CreateModelArticle{
+	err = storage.AddNewArticle("8048264e-21a4-4ad5-b1d4-baf809210db6", models.CreateModelArticle{
 		Content: models.Content{
 			Title: "Lorem",
 			Body: "This is my Lorem pages",
@@ -41,6 +41,128 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = storage.AddNewArticle("6c5dc295-e3fc-4970-8841-7505630d796d", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "1",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("d0c6557c-eaea-4e63-8c80-71caf73c7d89", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "2",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("23ae0860-84a2-4b9e-b119-918ad85b9f03", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "3",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("d8aed20c-aca3-4c1f-875f-ce823cd0495a", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "4",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("3c4f62cf-b6ac-49f7-95bd-ce776ea58b34", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "5",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("0828afee-86bf-4a58-8c85-b8f1a7fe304b", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "6",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("44d50ef7-349c-49a0-a715-bd624f1fb397", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "7",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("e914f3a6-8316-4e68-9241-8218e673bc14", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "8",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("595a44d4-a382-489c-9bd8-c638dce27c45", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "9",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("a525fcd5-7ab6-417d-89dd-90799b46d32e", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "10",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddNewArticle("653a1fc3-65f6-42e0-8b18-b044fba31c7f", models.CreateModelArticle{
+		Content: models.Content{
+			Title: "11",
+			Body: "This is my Lorem pages",
+		},
+		AuthorID: "52c9c9bd-2e68-401f-8ade-31dc7e7d6eea",
+	})
+	if err != nil {
+		panic(err)
+	}
+
 
 	r := gin.Default()
 

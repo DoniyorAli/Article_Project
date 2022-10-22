@@ -29,6 +29,26 @@ const docTemplate = `{
                     "articles"
                 ],
                 "summary": "List articles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "10",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "smth",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -653,10 +673,6 @@ const docTemplate = `{
         },
         "models.UpdateAuthorResponse": {
             "type": "object",
-            "required": [
-                "firstname",
-                "lastname"
-            ],
             "properties": {
                 "firstname": {
                     "type": "string",

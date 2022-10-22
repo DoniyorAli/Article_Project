@@ -19,7 +19,7 @@ import (
 // @Param       author body models.CreateModelAuthor true "author body" //? True false nimaga kerak ahir modulda required borku
 // @Produce     json
 // @Success     201 {object} models.JSONRespons{data=models.Author} //? interfeysni overright qivoradi
-// @Failure     400 {object} models.JSONErrorRespons            //? yani bizani sructuramizni interfeysni orniga qoyvoradi
+// @Failure     400 {object} models.JSONErrorRespons                //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/author [post]
 func CreateAuthor(ctx *gin.Context){
 	var body models.CreateModelAuthor

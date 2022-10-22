@@ -3,6 +3,7 @@ package storage
 import (
 	"UacademyGo/Article/models"
 	"errors"
+	"strings"
 	"time"
 )
 
@@ -39,10 +40,21 @@ func GetArticleById(id string) (models.GetByIDArticleModel, error) {
 	return result, errors.New("article not found")
 }
 //*=========================================================================
-func GetArticleList() (dataset []models.Article, err error) {
+func GetArticleList(offset, limit int, search string) (dataset []models.Article, err error) {
+	throw := 0
+	count := 0
+
 	for _, v := range InMemoryArticleData {
-		if v.DeletedAt == nil {
-			dataset = append(dataset, v)	//! dataset ---> malumotlar to'plami
+		if v.DeletedAt == nil && (strings.Contains(v.Title, search) || strings.Contains(v.Body, search)) {
+			if offset <= throw {
+				count++
+				dataset = append(dataset, v)	//! dataset ---> malumotlar to'plami
+			}
+			
+			if count >= limit {
+				break
+			}
+			throw++
 		}
 	}
 	return dataset, err

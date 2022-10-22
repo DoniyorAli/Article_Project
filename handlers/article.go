@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"UacademyGo/Article/models"
 	"UacademyGo/Article/storage"
@@ -20,7 +21,7 @@ import (
 // @Param       article body models.CreateModelArticle true "article body" //? True false nimaga kerak ahir modulda required borku
 // @Produce     json
 // @Success     201 {object} models.JSONRespons{data=models.Article} //? interfeysni overright qivoradi
-// @Failure     400 {object} models.JSONErrorRespons            //? yani bizani sructuramizni interfeysni orniga qoyvoradi
+// @Failure     400 {object} models.JSONErrorRespons                 //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/article [post]
 func CreateArticle(ctx *gin.Context){
 	var body models.CreateModelArticle
@@ -97,12 +98,35 @@ func GetArticleById(ctx *gin.Context) {
 // @Tags        articles
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} models.JSONRespons{data=[]models.Article}
+// @Param       offset query    int    false "0"
+// @Param       limit  query    int    false "10"
+// @Param       search query    string false "smth"
+// @Success     200    {object} models.JSONRespons{data=[]models.Article}
 // @Router      /v2/article [get]
 func GetArticleList(ctx *gin.Context) {
-	articleList, err := storage.GetArticleList()
+	offsetStr := ctx.DefaultQuery("offset", "0")
+	limitStr := ctx.DefaultQuery("limit", "10")
+	searchStr := ctx.DefaultQuery("search", "")
+
+	offset, err := strconv.Atoi(offsetStr)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
+		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	articleList, err := storage.GetArticleList(offset, limit, searchStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
 		})
 		return
