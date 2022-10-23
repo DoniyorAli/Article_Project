@@ -12,7 +12,13 @@ func (inM InMemory) AddNewArticle(id string, box models.CreateModelArticle) erro
 	var article models.Article
 	article.ID = id
 	article.Content = box.Content
-	article.AuthorID = box.AuthorID
+
+	author, err := inM.GetAuthorById(box.AuthorID)
+	if err != nil {
+		return err
+	}
+
+	article.AuthorID = author.ID
 	article.CreateAt = time.Now()
 	inM.DB.InMemoryArticleData = append(inM.DB.InMemoryArticleData, article)
 	return nil

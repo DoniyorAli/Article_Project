@@ -1,7 +1,9 @@
 package handlers
 
-import "UacademyGo/Article/storage/inmemory"
+import (
+	"UacademyGo/Article/storage"
+)
 
 type Handler struct {
-	IM inmemory.InMemory
+	Stg storage.StorageInter
 }

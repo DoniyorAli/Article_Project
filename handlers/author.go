@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"UacademyGo/Article/models"
-	"UacademyGo/Article/storage/inmemory"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -22,7 +21,6 @@ import (
 // @Failure     400 {object} models.JSONErrorRespons                //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/author [post]
 func (h *Handler) CreateAuthor(ctx *gin.Context){
-	inM := inmemory.InMemory{}
 	var body models.CreateModelAuthor
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
@@ -31,7 +29,7 @@ func (h *Handler) CreateAuthor(ctx *gin.Context){
 
 	id := uuid.New()
 
-	err := inM.AddAuthor(id.String(), body)
+	err := h.Stg.AddAuthor(id.String(), body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -39,7 +37,7 @@ func (h *Handler) CreateAuthor(ctx *gin.Context){
 		return
 	}
 
-	author, err := inM.GetAuthorById(id.String())
+	author, err := h.Stg.GetAuthorById(id.String())
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -65,7 +63,6 @@ func (h *Handler) CreateAuthor(ctx *gin.Context){
 // @Failure     404 {object} models.JSONErrorRespons
 // @Router      /v2/author/{id} [get]
 func (h *Handler) GetAuthorById(ctx *gin.Context) {
-	inM := inmemory.InMemory{}
 	idStr := ctx.Param("id")
 
 //TODO UUID validation
@@ -75,7 +72,7 @@ func (h *Handler) GetAuthorById(ctx *gin.Context) {
 		 
 	// }
 
-	author, err := inM.GetAuthorById(idStr) //? qanaqa qilip storagega bervorvotti
+	author, err := h.Stg.GetAuthorById(idStr) //? qanaqa qilip storagega bervorvotti
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -101,8 +98,7 @@ func (h *Handler) GetAuthorById(ctx *gin.Context) {
 // @Success     200 {object} models.JSONRespons{data=[]models.Author}
 // @Router      /v2/author [get]
 func (h *Handler) GetAuthorList(ctx *gin.Context) {
-	inM := inmemory.InMemory{}
-	authorList, err := inM.GetAuthorList()
+	authorList, err := h.Stg.GetAuthorList()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -127,14 +123,13 @@ func (h *Handler) GetAuthorList(ctx *gin.Context) {
 // @Failure     400 {object} models.JSONErrorRespons
 // @Router      /v2/author [put]
 func (h *Handler) UpdateAuthor(ctx *gin.Context) {
-	inM := inmemory.InMemory{}
 	var body models.UpdateAuthorResponse
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
 		return
 	}
 
-	err :=  inM.UpdateAuthor(body)
+	err :=  h.Stg.UpdateAuthor(body)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
@@ -144,7 +139,7 @@ func (h *Handler) UpdateAuthor(ctx *gin.Context) {
 		return
 	}
 
-	author, err := inM.GetAuthorById(body.ID)
+	author, err := h.Stg.GetAuthorById(body.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
@@ -171,10 +166,9 @@ func (h *Handler) UpdateAuthor(ctx *gin.Context) {
 // @Failure     400 {object} models.JSONErrorRespons
 // @Router      /v2/author/{id} [delete]
 func (h *Handler) DeleteAuthor(ctx *gin.Context) {
-	inM := inmemory.InMemory{}
 	idStr := ctx.Param("id")
 
-	author, err := inM.GetAuthorById(idStr)
+	author, err := h.Stg.GetAuthorById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
 			Message: "author already deleted or not found or you entered wrong ID",
@@ -183,7 +177,7 @@ func (h *Handler) DeleteAuthor(ctx *gin.Context) {
 		return
 	}
 
-	err = inM.DeleteAuthor(author.ID)
+	err = h.Stg.DeleteAuthor(author.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{

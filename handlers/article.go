@@ -31,7 +31,7 @@ func (h *Handler) CreateArticle(ctx *gin.Context){
 
 	id := uuid.New()
 
-	err := h.IM.AddNewArticle(id.String(), body)
+	err := h.Stg.AddNewArticle(id.String(), body)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -39,7 +39,7 @@ func (h *Handler) CreateArticle(ctx *gin.Context){
 		return
 	}
 
-	article, err := h.IM.GetArticleById(id.String())
+	article, err := h.Stg.GetArticleById(id.String())
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -74,7 +74,7 @@ func (h *Handler) GetArticleById(ctx *gin.Context) {
 		 
 	// }
 	
-	article, err := h.IM.GetArticleById(idStr) //? qanaqa qilip inMga bervorvotti
+	article, err := h.Stg.GetArticleById(idStr) //? qanaqa qilip inMga bervorvotti
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -124,7 +124,7 @@ func (h *Handler) GetArticleList(ctx *gin.Context) {
 	}
 
 	
-	articleList, err := h.IM.GetArticleList(offset, limit, searchStr)
+	articleList, err := h.Stg.GetArticleList(offset, limit, searchStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -156,7 +156,7 @@ func (h *Handler) UpdateArticle(ctx *gin.Context) {
 	}
 
 	
-	err :=  h.IM.UpdateArticle(body)
+	err :=  h.Stg.UpdateArticle(body)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
@@ -166,7 +166,7 @@ func (h *Handler) UpdateArticle(ctx *gin.Context) {
 		return
 	}
 
-	article, err := h.IM.GetArticleById(body.ID)
+	article, err := h.Stg.GetArticleById(body.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
@@ -196,7 +196,7 @@ func (h *Handler) DeleteArticle(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
 	
-	article, err := h.IM.GetArticleById(idStr)
+	article, err := h.Stg.GetArticleById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Message: "article already deleted or not found or you entered wrong ID",
@@ -205,7 +205,7 @@ func (h *Handler) DeleteArticle(ctx *gin.Context) {
 		return
 	}
 
-	err = h.IM.DeleteArticle(article.ID)
+	err = h.Stg.DeleteArticle(article.ID)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
