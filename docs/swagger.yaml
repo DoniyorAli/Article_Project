@@ -285,6 +285,19 @@ paths:
       consumes:
       - application/json
       description: get authors
+      parameters:
+      - description: "0"
+        in: query
+        name: offset
+        type: integer
+      - description: "10"
+        in: query
+        name: limit
+        type: integer
+      - description: smth
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:

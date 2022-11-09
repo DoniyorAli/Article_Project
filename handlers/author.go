@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"UacademyGo/Article/models"
 
@@ -95,10 +96,33 @@ func (h *Handler) GetAuthorById(ctx *gin.Context) {
 // @Tags        authors
 // @Accept      json
 // @Produce     json
+// @Param       offset query    int    false "0"
+// @Param       limit  query    int    false "10"
+// @Param       search query    string false "smth"
 // @Success     200 {object} models.JSONRespons{data=[]models.Author}
 // @Router      /v2/author [get]
 func (h *Handler) GetAuthorList(ctx *gin.Context) {
-	authorList, err := h.Stg.GetAuthorList()
+	offsetStr := ctx.DefaultQuery("offset", "0")
+	limitStr := ctx.DefaultQuery("limit", "10")
+	searchStr := ctx.DefaultQuery("search", "")
+
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	authorList, err := h.Stg.GetAuthorList(offset, limit, searchStr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
 			Error: err.Error(),

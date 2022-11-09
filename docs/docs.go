@@ -285,6 +285,26 @@ const docTemplate = `{
                     "authors"
                 ],
                 "summary": "List authors",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "10",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "smth",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -12,7 +12,7 @@ type StorageInter interface {
 //* Author
 	AddAuthor(id string, box models.CreateModelAuthor) error
 	GetAuthorById(id string) (models.Author, error)
-	GetAuthorList() (dataset []models.Author, err error)
+	GetAuthorList(limit,offset int, search string) (dataset []models.Author, err error)
 	UpdateAuthor(box models.UpdateAuthorResponse) error
 	DeleteAuthor(id string) error
 } 
