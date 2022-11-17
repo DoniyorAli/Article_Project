@@ -6,20 +6,15 @@ import (
 )
 
 func (stg Postgres) AddAuthor(id string, box models.CreateModelAuthor) error {
-	var err error
-	if len(id) > 36 {
-		return errors.New("ID was entered wrong! exc: ID must be entered with 36 or big from 36 elements")
-	}
-
-	_, err = stg.homeDB.Exec(`INSERT INTO author 
+	_, err := stg.homeDB.Exec(`INSERT INTO author 
 	(
 		id,
 		firstname,
-		lastname,
+		lastname
 	) VALUES (
 		$1,
 		$2,
-		$3,
+		$3
 	)`,
 		id,
 		box.Firstname,
@@ -41,7 +36,7 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 		created_at,
 		updated_at,
 		deleted_at
-    FROM author WHERE id = $1 AND delete_at NULL`, id).Scan(
+    FROM author WHERE id = $1 AND deleted_at IS NULL`, id).Scan(
 		&author.ID,
 		&author.Firstname,
 		&author.Lastname,
@@ -52,7 +47,6 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 	if err != nil {
 		return author, err
 	}
-
 	return author, nil
 }
 
@@ -92,40 +86,48 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 		if err != nil {
 			return res, err
 		}
-
 		res = append(res, author)
-
 	}
-
 	return res, err
 }
 
 //*=========================================================================
 func (stg Postgres) UpdateAuthor(box models.UpdateAuthorResponse) error {
-	// var temp models.Author
-	// for i, v := range inM.DB.InMemoryAuthorData {
-	// 	if v.ID == box.ID {
-	// 		temp = v
-	// 		temp.Firstname = box.Firstname
-	// 		temp.Lastname = box.Lastname
-	// 		t := time.Now()
-	// 		temp.UpdateAt = &t
-	// 		inM.DB.InMemoryAuthorData[i] = temp
-		
-	// 		return nil
-	// 	}
-	// }
+
+	res, err := stg.homeDB.NamedExec("UPDATE author  SET firstname=:f, lastname=:l, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
+		"id": box.ID,
+		"f":  box.Firstname,
+		"l":  box.Lastname,
+	})
+	if err != nil {
+		return err
+	}
+
+	affect, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affect > 0 {
+		return nil
+	}
 	return errors.New("author not found")
 }
 
 //*=========================================================================
 func (stg Postgres) DeleteAuthor(id string) error {
-	// for i, v := range inM.DB.InMemoryAuthorData {
-	// 	if v.ID == id {
-	// 		// InMemoryArticleData = remove(InMemoryArticleData, i)
-	// 		inM.DB.InMemoryAuthorData = append(inM.DB.InMemoryAuthorData[:i], inM.DB.InMemoryAuthorData[i+1:]...)
-	// 		return nil
-	// 	}
-	// }
-	return errors.New("deletion failed")
+	res, err := stg.homeDB.Exec("UPDATE author SET deleted_at=now() WHERE id=$1 AND deleted_at IS NULL", id)
+	if err != nil {
+		return err
+	}
+
+	affect, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affect > 0 {
+		return nil
+	}
+	return errors.New("author not found")
 }

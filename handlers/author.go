@@ -18,7 +18,7 @@ import (
 // @Accept      json
 // @Param       author body models.CreateModelAuthor true "author body" //? True false nimaga kerak ahir modulda required borku
 // @Produce     json
-// @Success     201 {object} models.JSONRespons{data=models.Author} //? interfeysni overright qivoradi
+// @Success     201 {object} models.JSONRespons{data=string} //? interfeysni overright qivoradi
 // @Failure     400 {object} models.JSONErrorRespons                //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/author [post]
 func (h *Handler) CreateAuthor(ctx *gin.Context){
@@ -38,7 +38,7 @@ func (h *Handler) CreateAuthor(ctx *gin.Context){
 		return
 	}
 
-	author, err := h.Stg.GetAuthorById(id.String())
+	_, err = h.Stg.GetAuthorById(id.String())
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -48,7 +48,7 @@ func (h *Handler) CreateAuthor(ctx *gin.Context){
 
 	ctx.JSON(http.StatusCreated, models.JSONRespons{
 		Message: "Author | GetList",
-		Data:    author,
+		Data:    id,
 	})
 }
 

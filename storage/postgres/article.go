@@ -7,7 +7,8 @@ import (
 
 //*=========================================================================
 func (stg Postgres) AddNewArticle(id string, box models.CreateModelArticle) error {
-	_, err := stg.GetAuthorById(box.AuthorID)
+	var err error
+	_, err = stg.GetAuthorById(box.AuthorID)
 	if err != nil {
 		return err
 	}

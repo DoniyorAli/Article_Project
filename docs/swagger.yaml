@@ -122,6 +122,9 @@ definitions:
         example: John
         maxLength: 16
         type: string
+    required:
+    - firstname
+    - lastname
     type: object
 info:
   contact: {}
@@ -336,7 +339,7 @@ paths:
             - $ref: '#/definitions/models.JSONRespons'
             - properties:
                 data:
-                  $ref: '#/definitions/models.Author'
+                  type: string
               type: object
         "400":
           description: Bad Request

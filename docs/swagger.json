@@ -402,7 +402,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Author"
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -681,6 +681,10 @@
         },
         "models.UpdateAuthorResponse": {
             "type": "object",
+            "required": [
+                "firstname",
+                "lastname"
+            ],
             "properties": {
                 "firstname": {
                     "type": "string",

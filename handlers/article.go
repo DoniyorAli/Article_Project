@@ -17,8 +17,8 @@ import (
 // @Description Create a new article
 // @Tags        articles
 // @Accept      json
-// @Param       article body models.CreateModelArticle true "article body" //? True false nimaga kerak ahir modulda required borku
 // @Produce     json
+// @Param       article body models.CreateModelArticle true "article body" //? True false nimaga kerak ahir modulda required borku
 // @Success     201 {object} models.JSONRespons{data=models.Article} //? interfeysni overright qivoradi
 // @Failure     400 {object} models.JSONErrorRespons                 //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
 // @Router      /v2/article [post]

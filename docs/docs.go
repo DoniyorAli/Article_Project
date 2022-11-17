@@ -414,7 +414,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Author"
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -693,6 +693,10 @@ const docTemplate = `{
         },
         "models.UpdateAuthorResponse": {
             "type": "object",
+            "required": [
+                "firstname",
+                "lastname"
+            ],
             "properties": {
                 "firstname": {
                     "type": "string",
