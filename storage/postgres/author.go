@@ -15,7 +15,7 @@ func (stg Postgres) AddAuthor(id string, box models.CreateModelAuthor) error {
 	) VALUES (
 		$1,
 		$2,
-		$3
+		$3,
 		$4
 	)`,
 		id,
@@ -32,6 +32,7 @@ func (stg Postgres) AddAuthor(id string, box models.CreateModelAuthor) error {
 //*=========================================================================
 func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 	var author models.Author
+	var tempMiddlename *string
 	err := stg.homeDB.QueryRow(`SELECT 
 		id,
 		firstname,
@@ -44,7 +45,7 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 		&author.ID,
 		&author.Firstname,
 		&author.Lastname,
-		&author.Middlename,
+		&tempMiddlename,
 		&author.CreateAt,
 		&author.UpdateAt,
 		&author.DeletedAt,
@@ -52,12 +53,18 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 	if err != nil {
 		return author, err
 	}
+
+	if tempMiddlename != nil {
+		author.Middlename = *tempMiddlename
+	}
+
 	return author, nil
 }
 
 //*=========================================================================
 func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Author, error) {
 	var res []models.Author
+	var tempMiddlename *string
 	rows, err := stg.homeDB.Queryx(`SELECT 
 		id,
 		firstname,
@@ -85,7 +92,7 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 			&author.ID,
 			&author.Firstname,
 			&author.Lastname,
-			&author.Middlename,
+			&tempMiddlename,
 			&author.CreateAt,
 			&author.UpdateAt,
 			&author.DeletedAt,
@@ -94,6 +101,11 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 			return res, err
 		}
 		res = append(res, author)
+
+		if tempMiddlename != nil {
+			author.Middlename = *tempMiddlename
+		}
+
 	}
 	return res, err
 }
