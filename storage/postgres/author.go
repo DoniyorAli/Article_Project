@@ -10,15 +10,18 @@ func (stg Postgres) AddAuthor(id string, box models.CreateModelAuthor) error {
 	(
 		id,
 		firstname,
-		lastname
+		lastname,
+		middlename
 	) VALUES (
 		$1,
 		$2,
 		$3
+		$4
 	)`,
 		id,
 		box.Firstname,
 		box.Lastname,
+		box.Middlename,
 	)
 	if err != nil {
 		return err
@@ -33,6 +36,7 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 		id,
 		firstname,
 		lastname,
+		middlename,
 		created_at,
 		updated_at,
 		deleted_at
@@ -40,6 +44,7 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 		&author.ID,
 		&author.Firstname,
 		&author.Lastname,
+		&author.Middlename,
 		&author.CreateAt,
 		&author.UpdateAt,
 		&author.DeletedAt,
@@ -57,11 +62,12 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 		id,
 		firstname,
 		lastname,
+		middlename,
 		created_at,
 		updated_at,
 		deleted_at 
 		FROM author
-		WHERE ((firstname ILIKE '%' || $1 || '%') or (lastname ILIKE '%' || $1 || '%') ) AND deleted_at IS NULL
+		WHERE ((firstname ILIKE '%' || $1 || '%') or (lastname ILIKE '%' || $1 || '%') or (middlename ILIKE '%' || $1 || '%')) AND deleted_at IS NULL
 		LIMIT $2
 		OFFSET $3
 	`,
@@ -79,6 +85,7 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 			&author.ID,
 			&author.Firstname,
 			&author.Lastname,
+			&author.Middlename,
 			&author.CreateAt,
 			&author.UpdateAt,
 			&author.DeletedAt,
@@ -94,10 +101,11 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 //*=========================================================================
 func (stg Postgres) UpdateAuthor(box models.UpdateAuthorResponse) error {
 
-	res, err := stg.homeDB.NamedExec("UPDATE author  SET firstname=:f, lastname=:l, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
+	res, err := stg.homeDB.NamedExec("UPDATE author  SET firstname=:f, lastname=:l, middlename=:m, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
 		"id": box.ID,
 		"f":  box.Firstname,
 		"l":  box.Lastname,
+		"m":  box.Middlename,
 	})
 	if err != nil {
 		return err

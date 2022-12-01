@@ -32,6 +32,9 @@ definitions:
         example: John
         maxLength: 16
         type: string
+      middlename:
+        example: JohnDoe
+        type: string
       updated_at:
         type: string
     required:
@@ -60,6 +63,9 @@ definitions:
       lastname:
         example: John
         maxLength: 16
+        type: string
+      middlename:
+        example: JohnDoe
         type: string
     required:
     - firstname
@@ -121,6 +127,9 @@ definitions:
       lastname:
         example: John
         maxLength: 16
+        type: string
+      middlename:
+        example: JohnDoe
         type: string
     required:
     - firstname

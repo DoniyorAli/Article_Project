@@ -569,6 +569,10 @@
                     "maxLength": 16,
                     "example": "John"
                 },
+                "middlename": {
+                    "type": "string",
+                    "example": "JohnDoe"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -609,6 +613,10 @@
                     "type": "string",
                     "maxLength": 16,
                     "example": "John"
+                },
+                "middlename": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 }
             }
         },
@@ -698,6 +706,10 @@
                     "type": "string",
                     "maxLength": 16,
                     "example": "John"
+                },
+                "middlename": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 }
             }
         }

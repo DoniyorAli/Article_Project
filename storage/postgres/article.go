@@ -38,6 +38,9 @@ func (stg Postgres) AddNewArticle(id string, box models.CreateModelArticle) erro
 //*=========================================================================
 func (stg Postgres) GetArticleById(id string) (models.GetByIDArticleModel, error) {
 	var a models.GetByIDArticleModel
+
+	var tempMiddlename *string
+
 	err := stg.homeDB.QueryRow(`SELECT 
 		ar.id,
 		ar.title,
@@ -48,6 +51,7 @@ func (stg Postgres) GetArticleById(id string) (models.GetByIDArticleModel, error
 		au.id,
 		au.firstname,
 		au.lastname,
+		au.middlename,
 		au.created_at,
 		au.updated_at,
 		au.deleted_at
@@ -61,6 +65,7 @@ func (stg Postgres) GetArticleById(id string) (models.GetByIDArticleModel, error
 		&a.Author.ID,
 		&a.Author.Firstname,
 		&a.Author.Lastname,
+		&tempMiddlename,
 		&a.Author.CreateAt,
 		&a.Author.UpdateAt,
 		&a.Author.DeletedAt,
@@ -68,6 +73,16 @@ func (stg Postgres) GetArticleById(id string) (models.GetByIDArticleModel, error
 	if err != nil {
 		return a, err
 	}
+
+	if tempMiddlename == nil {
+		a.Author.Middlename = ""
+	} else {
+		a.Author.Middlename = *tempMiddlename
+	}
+
+	// if tempMiddlename != nil {
+	// 	a.Author.Middlename = *tempMiddlename
+	// }
 
 	return a, nil
 }

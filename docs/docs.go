@@ -581,6 +581,10 @@ const docTemplate = `{
                     "maxLength": 16,
                     "example": "John"
                 },
+                "middlename": {
+                    "type": "string",
+                    "example": "JohnDoe"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -621,6 +625,10 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 16,
                     "example": "John"
+                },
+                "middlename": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 }
             }
         },
@@ -710,6 +718,10 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 16,
                     "example": "John"
+                },
+                "middlename": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 }
             }
         }
