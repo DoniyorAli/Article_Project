@@ -13,9 +13,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// * @contact.name   API Article
-// * @contact.url    http://john.doe.com
-// * @contact.email  john.doe@swagger.io
 // * @license.name  Apache 2.0
 // * @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
@@ -32,10 +29,8 @@ func main() {
 		cfg.PostgresDatabase,
 	)
 	
-	// programmatically set swagger info
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
-	docs.SwaggerInfo.Version = "2.0"
+	docs.SwaggerInfo.Title = cfg.App
+	docs.SwaggerInfo.Version = cfg.AppVersion
 
 	var err error
 	var stg storage.StorageInter
@@ -45,13 +40,20 @@ func main() {
 		panic(err)
 	}
 
-	r := gin.Default()
-
-	h := handlers.Handler{
-		Stg: stg,
+	if cfg.Environment != "development" {
+		gin.SetMode(gin.ReleaseMode)
 	}
 
-	v1 := r.Group("/v2")
+	r := gin.New()
+
+	if cfg.Environment != "production" {
+		r.Use(gin.Logger(), gin.Recovery())
+	}
+
+
+	h := handlers.NewHandler(stg, cfg)
+
+	v1 := r.Group("/v1")
 	{
 		v1.POST("/article", h.CreateArticle)
 		v1.GET("/article/:id", h.GetArticleById)
@@ -70,5 +72,5 @@ func main() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.Run(":8000")
+	r.Run(cfg.HTTPPort)
 }

@@ -135,7 +135,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /v2/article:
+  /v1/article:
     get:
       consumes:
       - application/json
@@ -230,7 +230,7 @@ paths:
       summary: Update article
       tags:
       - articles
-  /v2/article/{id}:
+  /v1/article/{id}:
     delete:
       consumes:
       - application/json
@@ -289,7 +289,7 @@ paths:
       summary: get article by id
       tags:
       - articles
-  /v2/author:
+  /v1/author:
     get:
       consumes:
       - application/json
@@ -384,7 +384,7 @@ paths:
       summary: Update author
       tags:
       - authors
-  /v2/author/{id}:
+  /v1/author/{id}:
     delete:
       consumes:
       - application/json

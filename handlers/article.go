@@ -2,11 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"regexp"
 	"strconv"
 
 	"UacademyGo/Article/models"
-	
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -18,11 +17,11 @@ import (
 // @Tags        articles
 // @Accept      json
 // @Produce     json
-// @Param       article body models.CreateModelArticle true "article body" //? True false nimaga kerak ahir modulda required borku
-// @Success     201 {object} models.JSONRespons{data=models.Article} //? interfeysni overright qivoradi
-// @Failure     400 {object} models.JSONErrorRespons                 //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
-// @Router      /v2/article [post]
-func (h *Handler) CreateArticle(ctx *gin.Context){
+// @Param       article body models.CreateModelArticle true "article body"
+// @Success     201 {object} models.JSONRespons{data=models.Article} 
+// @Failure     400 {object} models.JSONErrorRespons                 
+// @Router      /v1/article [post]
+func (h *handler) CreateArticle(ctx *gin.Context) {
 	var body models.CreateModelArticle
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
@@ -63,18 +62,13 @@ func (h *Handler) CreateArticle(ctx *gin.Context){
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=models.GetByIDArticleModel}
 // @Failure     404 {object} models.JSONErrorRespons
-// @Router      /v2/article/{id} [get]
-func (h *Handler) GetArticleById(ctx *gin.Context) {
+// @Router      /v1/article/{id} [get]
+func (h *handler) GetArticleById(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
-//TODO UUID validation
-	// // if len(idStr) == 37 && 				//? ---> 4c0fb410-76e1-4ef8-8317-e4f4a78f3d76
-	// isTrue := GetUUIDValidator(idStr)
-	// if isTrue == true{
-		 
-	// }
-	
-	article, err := h.Stg.GetArticleById(idStr) //? qanaqa qilip inMga bervorvotti
+	//TODO UUID validation
+
+	article, err := h.Stg.GetArticleById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -82,11 +76,9 @@ func (h *Handler) GetArticleById(ctx *gin.Context) {
 		return
 	}
 
-
-	
 	ctx.JSON(http.StatusOK, models.JSONRespons{
 		Message: "passed successfully",
-		Data: article,
+		Data:    article,
 	})
 }
 
@@ -101,10 +93,11 @@ func (h *Handler) GetArticleById(ctx *gin.Context) {
 // @Param       limit  query    int    false "10"
 // @Param       search query    string false "smth"
 // @Success     200    {object} models.JSONRespons{data=[]models.Article}
-// @Router      /v2/article [get]
-func (h *Handler) GetArticleList(ctx *gin.Context) {
-	offsetStr := ctx.DefaultQuery("offset", "0")
-	limitStr := ctx.DefaultQuery("limit", "10")
+// @Router      /v1/article [get]
+func (h *handler) GetArticleList(ctx *gin.Context) {
+	
+	offsetStr := ctx.DefaultQuery("offset", h.Cfg.DefaultOffset)
+	limitStr := ctx.DefaultQuery("limit", h.Cfg.DefaultLimit)
 	searchStr := ctx.DefaultQuery("search", "")
 
 	offset, err := strconv.Atoi(offsetStr)
@@ -123,7 +116,6 @@ func (h *Handler) GetArticleList(ctx *gin.Context) {
 		return
 	}
 
-	
 	articleList, err := h.Stg.GetArticleList(offset, limit, searchStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
@@ -147,21 +139,20 @@ func (h *Handler) GetArticleList(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=models.Article}
 // @Failure     400 {object} models.JSONErrorRespons
-// @Router      /v2/article [put]
-func (h *Handler) UpdateArticle(ctx *gin.Context) {
+// @Router      /v1/article [put]
+func (h *handler) UpdateArticle(ctx *gin.Context) {
 	var body models.UpdateArticleResponse
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
 		return
 	}
 
-	
-	err :=  h.Stg.UpdateArticle(body)
+	err := h.Stg.UpdateArticle(body)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Message: "error",
-			Error: err.Error(),
+			Error:   err.Error(),
 		})
 		return
 	}
@@ -177,7 +168,7 @@ func (h *Handler) UpdateArticle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, models.JSONRespons{
 		Message: "Article successfully updated",
-		Data: article,
+		Data:    article,
 	})
 }
 
@@ -191,16 +182,15 @@ func (h *Handler) UpdateArticle(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=models.Article}
 // @Failure     400 {object} models.JSONErrorRespons
-// @Router      /v2/article/{id} [delete]
-func (h *Handler) DeleteArticle(ctx *gin.Context) {
+// @Router      /v1/article/{id} [delete]
+func (h *handler) DeleteArticle(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
-	
 	article, err := h.Stg.GetArticleById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Message: "article already deleted or not found or you entered wrong ID",
-			Error: err.Error(),
+			Error:   err.Error(),
 		})
 		return
 	}
@@ -221,15 +211,8 @@ func (h *Handler) DeleteArticle(ctx *gin.Context) {
 }
 
 // * ==================== PingPong ====================
-func (h *Handler) Pong(ctx *gin.Context) {
+func (h *handler) Pong(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 	})
-}
-
-//*===========================================================
-//! Checking the UUID ...
-func GetUUIDValidator(text string) bool {
-    r, _ := regexp.Compile("/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/")
-    return r.Match([]byte(text))
 }

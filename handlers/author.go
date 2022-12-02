@@ -16,12 +16,12 @@ import (
 // @Description Create a new author
 // @Tags        authors
 // @Accept      json
-// @Param       author body models.CreateModelAuthor true "author body" //? True false nimaga kerak ahir modulda required borku
+// @Param       author body models.CreateModelAuthor true "author body"
 // @Produce     json
-// @Success     201 {object} models.JSONRespons{data=string} //? interfeysni overright qivoradi
-// @Failure     400 {object} models.JSONErrorRespons                //? yani        bizani    sructuramizni interfeysni orniga qoyvoradi
-// @Router      /v2/author [post]
-func (h *Handler) CreateAuthor(ctx *gin.Context){
+// @Success     201 {object} models.JSONRespons{data=string}
+// @Failure     400 {object} models.JSONErrorRespons
+// @Router      /v1/author [post]
+func (h *handler) CreateAuthor(ctx *gin.Context) {
 	var body models.CreateModelAuthor
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
@@ -62,18 +62,13 @@ func (h *Handler) CreateAuthor(ctx *gin.Context){
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=models.Author}
 // @Failure     404 {object} models.JSONErrorRespons
-// @Router      /v2/author/{id} [get]
-func (h *Handler) GetAuthorById(ctx *gin.Context) {
+// @Router      /v1/author/{id} [get]
+func (h *handler) GetAuthorById(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
-//TODO UUID validation
-	// // if len(idStr) == 37 && 				//? ---> 4c0fb410-76e1-4ef8-8317-e4f4a78f3d76
-	// isTrue := GetUUIDValidator(idStr)
-	// if isTrue == true{
-		 
-	// }
+	//TODO UUID validation
 
-	author, err := h.Stg.GetAuthorById(idStr) //? qanaqa qilip storagega bervorvotti
+	author, err := h.Stg.GetAuthorById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, models.JSONErrorRespons{
 			Error: err.Error(),
@@ -81,11 +76,9 @@ func (h *Handler) GetAuthorById(ctx *gin.Context) {
 		return
 	}
 
-
-	
 	ctx.JSON(http.StatusOK, models.JSONRespons{
 		Message: "passed successfully",
-		Data: author,
+		Data:    author,
 	})
 }
 
@@ -100,8 +93,8 @@ func (h *Handler) GetAuthorById(ctx *gin.Context) {
 // @Param       limit  query    int    false "10"
 // @Param       search query    string false "smth"
 // @Success     200 {object} models.JSONRespons{data=[]models.Author}
-// @Router      /v2/author [get]
-func (h *Handler) GetAuthorList(ctx *gin.Context) {
+// @Router      /v1/author [get]
+func (h *handler) GetAuthorList(ctx *gin.Context) {
 	offsetStr := ctx.DefaultQuery("offset", "0")
 	limitStr := ctx.DefaultQuery("limit", "10")
 	searchStr := ctx.DefaultQuery("search", "")
@@ -145,20 +138,20 @@ func (h *Handler) GetAuthorList(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=models.Author}
 // @Failure     400 {object} models.JSONErrorRespons
-// @Router      /v2/author [put]
-func (h *Handler) UpdateAuthor(ctx *gin.Context) {
+// @Router      /v1/author [put]
+func (h *handler) UpdateAuthor(ctx *gin.Context) {
 	var body models.UpdateAuthorResponse
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{Error: err.Error()})
 		return
 	}
 
-	err :=  h.Stg.UpdateAuthor(body)
+	err := h.Stg.UpdateAuthor(body)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, models.JSONErrorRespons{
 			Message: "Storage error",
-			Error: err.Error(),
+			Error:   err.Error(),
 		})
 		return
 	}
@@ -174,7 +167,7 @@ func (h *Handler) UpdateAuthor(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, models.JSONRespons{
 		Message: "Author successfully updated",
-		Data: author,
+		Data:    author,
 	})
 }
 
@@ -188,15 +181,15 @@ func (h *Handler) UpdateAuthor(ctx *gin.Context) {
 // @Produce     json
 // @Success     200 {object} models.JSONRespons{data=models.Author}
 // @Failure     400 {object} models.JSONErrorRespons
-// @Router      /v2/author/{id} [delete]
-func (h *Handler) DeleteAuthor(ctx *gin.Context) {
+// @Router      /v1/author/{id} [delete]
+func (h *handler) DeleteAuthor(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 
 	author, err := h.Stg.GetAuthorById(idStr)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.JSONErrorRespons{
 			Message: "author already deleted or not found or you entered wrong ID",
-			Error: err.Error(),
+			Error:   err.Error(),
 		})
 		return
 	}
@@ -215,17 +208,3 @@ func (h *Handler) DeleteAuthor(ctx *gin.Context) {
 		Data:    author,
 	})
 }
-
-// // * ==================== PingPong ====================
-// func Pong(ctx *gin.Context) {
-// 	ctx.JSON(http.StatusOK, gin.H{
-// 		"message": "pong",
-// 	})
-// }
-
-// //*==========================================================
-// //! Checking the UUID ...
-// func GetUUIDValidator(text string) bool {
-//     r, _ := regexp.Compile("/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/")
-//     return r.Match([]byte(text))
-// }

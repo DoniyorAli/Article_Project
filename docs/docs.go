@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v2/article": {
+        "/v1/article": {
             "get": {
                 "description": "get articles",
                 "consumes": [
@@ -174,7 +174,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v2/article/{id}": {
+        "/v1/article/{id}": {
             "get": {
                 "description": "get a new article",
                 "consumes": [
@@ -272,7 +272,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v2/author": {
+        "/v1/author": {
             "get": {
                 "description": "get authors",
                 "consumes": [
@@ -430,7 +430,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v2/author/{id}": {
+        "/v1/author/{id}": {
             "get": {
                 "description": "get a new author",
                 "consumes": [
