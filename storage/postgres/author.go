@@ -9,18 +9,15 @@ func (stg Postgres) AddAuthor(id string, box models.CreateModelAuthor) error {
 	_, err := stg.homeDB.Exec(`INSERT INTO author 
 	(
 		id,
-		firstname,
-		lastname,
+		fullname,
 		middlename
 	) VALUES (
 		$1,
 		$2,
-		$3,
-		$4
+		$3
 	)`,
 		id,
-		box.Firstname,
-		box.Lastname,
+		box.Fullname,
 		box.Middlename,
 	)
 	if err != nil {
@@ -35,16 +32,14 @@ func (stg Postgres) GetAuthorById(id string) (models.Author, error) {
 	var tempMiddlename *string
 	err := stg.homeDB.QueryRow(`SELECT 
 		id,
-		firstname,
-		lastname,
+		fullname,
 		middlename,
 		created_at,
 		updated_at,
 		deleted_at
     FROM author WHERE id = $1 AND deleted_at IS NULL`, id).Scan(
 		&author.ID,
-		&author.Firstname,
-		&author.Lastname,
+		&author.Fullname,
 		&tempMiddlename,
 		&author.CreateAt,
 		&author.UpdateAt,
@@ -67,14 +62,13 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 	var tempMiddlename *string
 	rows, err := stg.homeDB.Queryx(`SELECT 
 		id,
-		firstname,
-		lastname,
+		fullname,
 		middlename,
 		created_at,
 		updated_at,
 		deleted_at 
 		FROM author
-		WHERE ((firstname ILIKE '%' || $1 || '%') or (lastname ILIKE '%' || $1 || '%') or (middlename ILIKE '%' || $1 || '%')) AND deleted_at IS NULL
+		WHERE ((fullname ILIKE '%' || $1 || '%') or (middlename ILIKE '%' || $1 || '%')) AND deleted_at IS NULL
 		LIMIT $2
 		OFFSET $3
 	`,
@@ -90,8 +84,7 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 		var author models.Author
 		err := rows.Scan(
 			&author.ID,
-			&author.Firstname,
-			&author.Lastname,
+			&author.Fullname,
 			&tempMiddlename,
 			&author.CreateAt,
 			&author.UpdateAt,
@@ -113,10 +106,9 @@ func (stg Postgres) GetAuthorList(offset, limit int, search string) ([]models.Au
 //*=========================================================================
 func (stg Postgres) UpdateAuthor(box models.UpdateAuthorResponse) error {
 
-	res, err := stg.homeDB.NamedExec("UPDATE author  SET firstname=:f, lastname=:l, middlename=:m, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
+	res, err := stg.homeDB.NamedExec("UPDATE author  SET fullname=:f, middlename=:m, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
 		"id": box.ID,
-		"f":  box.Firstname,
-		"l":  box.Lastname,
+		"f":  box.Fullname,
 		"m":  box.Middlename,
 	})
 	if err != nil {

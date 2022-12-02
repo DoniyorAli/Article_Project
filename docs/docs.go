@@ -561,29 +561,25 @@ const docTemplate = `{
         "models.Author": {
             "type": "object",
             "required": [
-                "firstname",
-                "lastname"
+                "fullname"
             ],
             "properties": {
                 "created_at": {
                     "type": "string"
                 },
-                "firstname": {
+                "fullname": {
+                    "description": "Lastname  string ` + "`" + `json:\"lastname\" binding:\"required\" minLenth:\"3\" maxLength:\"16\" example:\"John\"` + "`" + `\nFirstname string ` + "`" + `json:\"firstname\" binding:\"required\" minLenth:\"3\" maxLength:\"16\" example:\"Doe\"` + "`" + `",
                     "type": "string",
-                    "maxLength": 16,
-                    "example": "Doe"
+                    "maxLength": 255,
+                    "example": "Sherlock Holmes"
                 },
                 "id": {
                     "type": "string"
                 },
-                "lastname": {
-                    "type": "string",
-                    "maxLength": 16,
-                    "example": "John"
-                },
                 "middlename": {
                     "type": "string",
-                    "example": "JohnDoe"
+                    "maxLength": 15,
+                    "example": "Sherlock"
                 },
                 "updated_at": {
                     "type": "string"
@@ -612,23 +608,19 @@ const docTemplate = `{
         "models.CreateModelAuthor": {
             "type": "object",
             "required": [
-                "firstname",
-                "lastname"
+                "fullname"
             ],
             "properties": {
-                "firstname": {
+                "fullname": {
+                    "description": "Lastname  string ` + "`" + `json:\"lastname\" binding:\"required\" minLenth:\"3\" maxLength:\"16\" example:\"John\"` + "`" + `\nFirstname string ` + "`" + `json:\"firstname\" binding:\"required\" minLenth:\"3\" maxLength:\"16\" example:\"Doe\"` + "`" + `",
                     "type": "string",
-                    "maxLength": 16,
-                    "example": "Doe"
-                },
-                "lastname": {
-                    "type": "string",
-                    "maxLength": 16,
-                    "example": "John"
+                    "maxLength": 255,
+                    "example": "Sherlock Holmes"
                 },
                 "middlename": {
                     "type": "string",
-                    "example": "JohnDoe"
+                    "maxLength": 15,
+                    "example": "Sherlock"
                 }
             }
         },
@@ -702,26 +694,22 @@ const docTemplate = `{
         "models.UpdateAuthorResponse": {
             "type": "object",
             "required": [
-                "firstname",
-                "lastname"
+                "fullname"
             ],
             "properties": {
-                "firstname": {
+                "fullname": {
+                    "description": "Lastname  string ` + "`" + `json:\"lastname\" binding:\"required\" minLenth:\"3\" maxLength:\"16\" example:\"John\"` + "`" + `\nFirstname string ` + "`" + `json:\"firstname\" binding:\"required\" minLenth:\"3\" maxLength:\"16\" example:\"Doe\"` + "`" + `",
                     "type": "string",
-                    "maxLength": 16,
-                    "example": "Doe"
+                    "maxLength": 255,
+                    "example": "Sherlock Holmes"
                 },
                 "id": {
                     "type": "string"
                 },
-                "lastname": {
-                    "type": "string",
-                    "maxLength": 16,
-                    "example": "John"
-                },
                 "middlename": {
                     "type": "string",
-                    "example": "JohnDoe"
+                    "maxLength": 15,
+                    "example": "Sherlock"
                 }
             }
         }
