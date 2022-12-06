@@ -9,10 +9,14 @@ func (stg Postgres) AddAuthor(id string, box models.CreateModelAuthor) error {
 	_, err := stg.homeDB.Exec(`INSERT INTO author 
 	(
 		id,
+		firstname,
+		lastname,
 		fullname,
 		middlename
 	) VALUES (
 		$1,
+		'',
+		'',
 		$2,
 		$3
 	)`,
